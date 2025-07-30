@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  fastreport-service:
+    build:
+      context: ./FastReportService
+    ports:
+      - "5000:80"
+    volumes:
+      - ./FastReportService/reports:/app/reports
+    networks:
+      - app-network
+
+  php-api:
+    build:
+      context: ./php-api
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - fastreport-service
+      - php-api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
